@@ -10,14 +10,26 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// Manual CORS Middleware for absolute control in production
+// Final Production CORS Configuration
 app.use((req, res, next) => {
+  const allowedOrigins = [
+    'https://bite-dash-eight.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ];
   const origin = req.headers.origin;
-  // Dynamic allow all origins for debug/migration, but echo back for credentials support
-  res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else if (!origin) {
+    // For non-browser requests
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  
   res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -27,7 +39,18 @@ app.use((req, res, next) => {
 
 const io = new Server(server, {
   cors: {
-    origin: true,
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'https://bite-dash-eight.vercel.app',
+        'http://localhost:5173',
+        'http://localhost:3000'
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+    },
     credentials: true,
   },
 });
