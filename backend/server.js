@@ -10,24 +10,10 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-const ALLOWED_ORIGINS = [
-  'http://localhost:3000',
-  'http://localhost:5173',
-  'https://bite-dash-eight.vercel.app',
-  'https://bitedash.com'
-];
-
-if (process.env.ALLOWED_ORIGINS) {
-  process.env.ALLOWED_ORIGINS.split(',').forEach(o => ALLOWED_ORIGINS.push(o.trim()));
-}
-
 const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin || ALLOWED_ORIGINS.indexOf(origin) !== -1 || origin.includes('vercel.app')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+    // Allow all origins for production migration verification
+    callback(null, true);
   },
   credentials: true,
 };
@@ -66,6 +52,17 @@ app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => {
   res.send('BiteDash API is running...');
+});
+
+// Temporary Production Seed Route (Remove after use)
+app.get('/api/seed-production', async (req, res) => {
+  try {
+    const seedDB = require('./seed-logic'); // We'll move seed logic here
+    await seedDB();
+    res.send('Production database seeded successfully!');
+  } catch (err) {
+    res.status(500).send('Seeding failed: ' + err.message);
+  }
 });
 
 // Socket Connection
