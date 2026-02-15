@@ -10,19 +10,27 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow all origins for production migration verification
-    callback(null, true);
-  },
-  credentials: true,
-};
-
-const io = new Server(server, {
-  cors: corsOptions,
+// Manual CORS Middleware for absolute control in production
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  // Dynamic allow all origins for debug/migration, but echo back for credentials support
+  res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
 });
 
-app.use(cors(corsOptions));
+const io = new Server(server, {
+  cors: {
+    origin: true,
+    credentials: true,
+  },
+});
 app.use(express.json());
 
 // Attach io to req for controllers
