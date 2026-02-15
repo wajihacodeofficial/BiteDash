@@ -10,22 +10,32 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// Production CORS Configuration - Using Wildcard for maximum robustness
-// Note: We don't use credentials (cookies), so * is safe and effective
+// Ultimate CORS Configuration for Production
+app.use(cors({
+  origin: (origin, callback) => {
+    // Dynamically allow any origin and echo it back (necessary for credentials: true)
+    callback(null, true);
+  },
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
+
+// Manual preflight fallback
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    return res.sendStatus(200);
   }
   next();
 });
 
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: (origin, callback) => callback(null, true),
+    credentials: true,
   },
 });
 app.use(express.json());
