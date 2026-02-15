@@ -93,7 +93,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
 
 // Connect DB

@@ -15,6 +15,8 @@ const userSchema = new mongoose.Schema(
     phone: { type: String },
     profileImage: { type: String },
     isVerified: { type: Boolean, default: false },
+    verificationToken: { type: String },
+    verificationTokenExpires: { type: Date },
     otp: { type: String },
     otpExpires: { type: Date },
 

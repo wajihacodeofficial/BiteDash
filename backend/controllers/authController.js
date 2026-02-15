@@ -28,9 +28,8 @@ const register = async (req, res) => {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'User already exists.' });
 
-    const otp = generateOTP();
-    const otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
-    const hashedOtp = await bcrypt.hash(otp, 10);
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
 
     const user = await User.create({
       name,
@@ -39,23 +38,27 @@ const register = async (req, res) => {
       role,
       phone,
       address,
-      otp: hashedOtp,
-      otpExpires,
+      verificationToken,
+      verificationTokenExpires,
       isVerified: false,
     });
+
+    const verificationLink = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`;
 
     try {
       await sendEmail({
         email: user.email,
-        subject: 'Email Verification OTP',
+        subject: 'Verify your email - BiteDash',
         html: `
           <div style="font-family: sans-serif; padding: 20px;">
-            <h2 style="color: #2563eb;">Verify Your Email</h2>
-            <p>Thank you for registering with BiteDash! Please use the code below to verify your account:</p>
-            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; font-size: 24px; font-weight: bold; text-align: center; letter-spacing: 5px; margin: 20px 0;">
-              ${otp}
+            <h2 style="color: #2563eb;">Email Verification</h2>
+            <p>Thank you for registering with BiteDash! Please click the link below to verify your email address:</p>
+            <div style="margin: 30px 0;">
+              <a href="${verificationLink}" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Verify Email</a>
             </div>
-            <p style="color: #666; font-size: 14px;">This code will expire in 10 minutes.</p>
+            <p style="color: #666; font-size: 14px;">If the button doesn't work, copy and paste this link into your browser:</p>
+            <p style="color: #666; font-size: 14px;">${verificationLink}</p>
+            <p style="color: #666; font-size: 14px;">This link will expire in 24 hours.</p>
           </div>
         `,
       });
@@ -63,17 +66,16 @@ const register = async (req, res) => {
       console.error('CRITICAL: Email sending failed!');
       console.error('Error details:', emailError);
       
-      // Delete the unverified user if email fails so they can retry registration
       await User.findByIdAndDelete(user._id);
       
       return res.status(500).json({ 
-        message: 'Failed to send verification email. Please check your email or try again later.',
-        errorSnippet: emailError.message // Returning message snippet to help user
+        message: 'Failed to send verification email. Please try again later.',
+        errorSnippet: emailError.message 
       });
     }
 
     res.status(201).json({
-      message: 'Registration successful. Please verify your email with the OTP sent.',
+      message: 'Registration successful. Please check your email to verify your account.',
       user: { id: user._id, name, email, role: user.role, isVerified: false },
     });
   } catch (error) {
@@ -81,49 +83,35 @@ const register = async (req, res) => {
   }
 };
 
-const verifyOTP = async (req, res) => {
+const verifyEmail = async (req, res) => {
   try {
-    const { email, otp } = req.body;
-    const user = await User.findOne({ email });
+    const { token } = req.query;
+    if (!token) return res.status(400).json({ message: 'Verification token is required' });
 
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    if (user.isVerified) return res.status(400).json({ message: 'User already verified' });
+    const user = await User.findOne({ 
+      verificationToken: token,
+      verificationTokenExpires: { $gt: Date.now() }
+    });
 
-    if (!user.otp || !user.otpExpires || Date.now() > user.otpExpires) {
-      return res.status(400).json({ message: 'OTP expired or not found. Please resend.' });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired verification token' });
     }
 
-    const isMatch = await bcrypt.compare(otp, user.otp);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid OTP code' });
-
     user.isVerified = true;
-    user.otp = undefined;
-    user.otpExpires = undefined;
+    user.verificationToken = undefined;
+    user.verificationTokenExpires = undefined;
     await user.save();
 
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '1d' }
-    );
-
     res.json({
-      message: 'Email verified successfully',
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        isVerified: true
-      },
+      message: 'Email verified successfully. You can now log in.',
+      isVerified: true
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-const resendOTP = async (req, res) => {
+const resendVerificationLink = async (req, res) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email });
@@ -131,30 +119,33 @@ const resendOTP = async (req, res) => {
     if (!user) return res.status(404).json({ message: 'User not found' });
     if (user.isVerified) return res.status(400).json({ message: 'User already verified' });
 
-    const otp = generateOTP();
-    const otpExpires = Date.now() + 10 * 60 * 1000;
-    const hashedOtp = await bcrypt.hash(otp, 10);
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
 
-    user.otp = hashedOtp;
-    user.otpExpires = otpExpires;
+    user.verificationToken = verificationToken;
+    user.verificationTokenExpires = verificationTokenExpires;
     await user.save();
+
+    const verificationLink = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`;
 
     await sendEmail({
       email: user.email,
-      subject: 'Email Verification OTP',
+      subject: 'Resend: Verify your email - BiteDash',
       html: `
         <div style="font-family: sans-serif; padding: 20px;">
-          <h2 style="color: #2563eb;">Your New OTP</h2>
-          <p>You requested a new verification code. Use the code below to verify your account:</p>
-          <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; font-size: 24px; font-weight: bold; text-align: center; letter-spacing: 5px; margin: 20px 0;">
-            ${otp}
+          <h2 style="color: #2563eb;">Email Verification</h2>
+          <p>You requested a new verification link. Please click below to verify your email address:</p>
+          <div style="margin: 30px 0;">
+            <a href="${verificationLink}" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Verify Email</a>
           </div>
-          <p style="color: #666; font-size: 14px;">This code will expire in 10 minutes.</p>
+          <p style="color: #666; font-size: 14px;">If the button doesn't work, copy and paste this link into your browser:</p>
+          <p style="color: #666; font-size: 14px;">${verificationLink}</p>
+          <p style="color: #666; font-size: 14px;">This link will expire in 24 hours.</p>
         </div>
       `,
     });
 
-    res.json({ message: 'New OTP sent to your email.' });
+    res.json({ message: 'Verification link sent to your email.' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -196,4 +187,4 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, verifyOTP, resendOTP, login };
+module.exports = { register, verifyEmail, resendVerificationLink, login };
