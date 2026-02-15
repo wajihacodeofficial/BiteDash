@@ -14,6 +14,9 @@ const userSchema = new mongoose.Schema(
     address: { type: String },
     phone: { type: String },
     profileImage: { type: String },
+    isVerified: { type: Boolean, default: false },
+    otp: { type: String },
+    otpExpires: { type: Date },
 
     // Rider specific fields
     employmentStatus: {

@@ -41,17 +41,9 @@ const Register = () => {
     setIsLoading(true);
     setError('');
     try {
-      const user = await register(formData);
-      // Redirect to appropriate dashboard based on user role
-      if (user.role === 'admin') {
-        navigate('/dashboard/admin');
-      } else if (user.role === 'rider') {
-        navigate('/dashboard/rider');
-      } else if (user.role === 'restaurant') {
-        navigate('/dashboard/restaurant');
-      } else {
-        navigate('/dashboard/customer');
-      }
+      await register(formData);
+      // Redirect to OTP verification screen
+      navigate('/verify-otp', { state: { email: formData.email } });
     } catch (err) {
       setError(
         err.response?.data?.message ||

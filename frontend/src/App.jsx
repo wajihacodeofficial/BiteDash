@@ -27,6 +27,7 @@ import DebugLogin from './pages/DebugLogin';
 import ComprehensiveDebug from './pages/ComprehensiveDebug';
 import SimpleLoginTest from './pages/SimpleLoginTest';
 import Register from './pages/Register';
+import VerifyOTP from './pages/VerifyOTP';
 import Cart from './pages/Cart';
 import Profile from './pages/Profile';
 import Orders from './pages/Orders';
@@ -120,6 +121,7 @@ function App() {
                     />
                     <Route path="/simple-test" element={<SimpleLoginTest />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/verify-otp" element={<VerifyOTP />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/orders" element={<Orders />} />

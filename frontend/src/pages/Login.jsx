@@ -29,7 +29,11 @@ const Login = () => {
         navigate('/dashboard/customer');
       }
     } catch (err) {
-      setError('Invalid email or password. Please try again.');
+      if (err.response?.status === 403 && err.response?.data?.unverified) {
+        navigate('/verify-otp', { state: { email } });
+      } else {
+        setError('Invalid email or password. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
