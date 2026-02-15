@@ -1,0 +1,94 @@
+.orders-page {
+  padding: 80px 20px;
+}
+
+.orders-header {
+  margin-bottom: 40px;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.order-card {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-main-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.order-icon-bg {
+  width: 56px;
+  height: 56px;
+  background: #fff0f5;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-details h3 {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.order-date {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.order-items-summary {
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.order-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.order-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.order-status-pill[data-status='delivered'] {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.order-status-pill[data-status='preparing'] {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.order-price {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.view-order-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  padding: 6px 16px;
+}

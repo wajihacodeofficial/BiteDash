@@ -1,0 +1,114 @@
+.profile-page {
+  padding: 80px 20px;
+}
+
+.profile-header {
+  margin-bottom: 40px;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 40px;
+}
+
+.profile-card {
+  padding: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  background: var(--primary);
+  color: white;
+  font-size: 40px;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.profile-info-main h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.badge-role {
+  background: #f0f0f0;
+  color: var(--text-muted);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.profile-details-list {
+  width: 100%;
+  margin: 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.edit-profile-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.address-section {
+  padding: 40px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.text-btn {
+  background: none;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.address-item {
+  display: flex;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+
+.pin-icon {
+  color: var(--primary);
+}
+
+.address-text strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.address-text p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
