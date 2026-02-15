@@ -14,8 +14,8 @@ const register = async (req, res) => {
         });
     }
 
-    // Strong Password Validation: Alphanumeric, min 8 chars
-    const passwordRegex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+){8,}$/;
+    // Strong Password Validation: min 8 chars, at least one letter and one number
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$/;
     if (!passwordRegex.test(password)) {
       return res.status(400).json({
         message:
