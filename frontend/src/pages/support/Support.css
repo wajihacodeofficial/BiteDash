@@ -1,0 +1,156 @@
+/* Partner & Support Pages */
+.support-page {
+  padding: 80px 0;
+}
+
+.support-page h1 {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 2.5rem;
+  color: #333;
+}
+
+.mb-5 {
+  margin-bottom: 3rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.help-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+  margin-bottom: 80px;
+}
+
+.help-card {
+  padding: 30px;
+  text-align: center;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  border: 1px solid #eee;
+}
+
+.help-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.help-card h3 {
+  margin-bottom: 15px;
+  color: var(--primary);
+}
+
+/* Contact Form Section */
+.contact-section {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.contact-form-card {
+  padding: 40px;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-header .icon-primary {
+  color: var(--primary);
+  margin-bottom: 15px;
+}
+
+.form-header h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #444;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.success-message {
+  text-align: center;
+  padding: 40px;
+  background: #fdf2f2;
+  border-radius: 12px;
+  color: var(--primary);
+}
+
+.w-100 {
+  width: 100%;
+  padding: 14px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Legal Content Styles */
+.legal-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.legal-content h3 {
+  margin-top: 25px;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.25rem;
+}
+
+.legal-content h3:first-child {
+  margin-top: 0;
+}
+
+.legal-content p {
+  color: #555;
+  line-height: 1.7;
+}
+
+.text-center {
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
