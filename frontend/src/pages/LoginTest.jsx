@@ -12,19 +12,15 @@ const LoginTest = () => {
     setResult('Testing...');
 
     try {
-      console.log(
-        'Attempting login to:',
-        'http://localhost:5001/api/auth/login'
-      );
+      const baseUrl =
+        import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api';
+      console.log('Attempting login to:', `${baseUrl}/auth/login`);
       console.log('Payload:', { email, password });
 
-      const response = await axios.post(
-        'http://localhost:5001/api/auth/login',
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axios.post(`${baseUrl}/auth/login`, {
+        email,
+        password,
+      });
 
       console.log('Response:', response);
       setResult(`SUCCESS: ${JSON.stringify(response.data, null, 2)}`);

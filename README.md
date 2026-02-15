@@ -1,5 +1,7 @@
 # 🍔 BiteDash | Premium Food Delivery Karachi
 
+🚀 **Live Demo:** [https://bite-dash-eight.vercel.app](https://bite-dash-eight.vercel.app)
+
 BiteDash is a high-performance, full-stack food delivery platform tailored specifically for the culinary landscape of Karachi. Built with the MERN stack, it offers a seamless experience for customers to browse, order, and track their favorite meals from the city's top restaurants.
 
 ![BiteDash Banner](https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80)
