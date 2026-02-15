@@ -10,24 +10,10 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// Final Production CORS Configuration
+// Production CORS Configuration - Using Wildcard for maximum robustness
+// Note: We don't use credentials (cookies), so * is safe and effective
 app.use((req, res, next) => {
-  const allowedOrigins = [
-    'https://bite-dash-eight.vercel.app',
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'http://localhost:3001'
-  ];
-  const origin = req.headers.origin;
-  
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  } else if (!origin) {
-    // For non-browser requests
-    res.setHeader('Access-Control-Allow-Origin', '*');
-  }
-  
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   
@@ -39,19 +25,7 @@ app.use((req, res, next) => {
 
 const io = new Server(server, {
   cors: {
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        'https://bite-dash-eight.vercel.app',
-        'http://localhost:5173',
-        'http://localhost:3000'
-      ];
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(null, false);
-      }
-    },
-    credentials: true,
+    origin: '*',
   },
 });
 app.use(express.json());
