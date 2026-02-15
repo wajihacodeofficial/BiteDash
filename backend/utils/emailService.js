@@ -1,26 +1,21 @@
-const nodemailer = require('nodemailer');
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'notifications@bitedash.com', // Mock creds, in prod utilize proper SMTP
-    pass: 'securepassword',
-  },
-});
+const sendEmail = require('./sendEmail');
 
 const sendOrderConfirmation = async (email, orderId, amount) => {
-  console.log(
-    `[EMAIL MOCK] Sending Order ${orderId} confirmation to ${email} for Rs. ${amount}`
-  );
+  const htmlContent = `
+    <div style="font-family: sans-serif; padding: 20px; color: #333;">
+      <h2 style="color: #2563eb;">Order Confirmed!</h2>
+      <p>Your order <strong>#${orderId}</strong> has been placed successfully.</p>
+      <p>Total Amount: <strong>Rs. ${amount}</strong></p>
+      <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
+      <p style="font-size: 0.9em; color: #666;">Thank you for choosing BiteDash!</p>
+    </div>
+  `;
 
-  await transporter.sendMail({
-    from: '"BiteDash" <notifications@bitedash.com>',
-    to: email,
+  return await sendEmail({
+    email,
     subject: 'Order Confirmed - BiteDash',
-    text: `Your order #${orderId} has been placed successfully. Total: Rs. ${amount}`,
+    html: htmlContent
   });
-
-  return true;
 };
 
 module.exports = { sendOrderConfirmation };

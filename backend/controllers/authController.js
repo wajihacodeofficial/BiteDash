@@ -48,7 +48,16 @@ const register = async (req, res) => {
       await sendEmail({
         email: user.email,
         subject: 'Email Verification OTP',
-        message: `Your verification code is: ${otp}\nThis code will expire in 10 minutes.`,
+        html: `
+          <div style="font-family: sans-serif; padding: 20px;">
+            <h2 style="color: #2563eb;">Verify Your Email</h2>
+            <p>Thank you for registering with BiteDash! Please use the code below to verify your account:</p>
+            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; font-size: 24px; font-weight: bold; text-align: center; letter-spacing: 5px; margin: 20px 0;">
+              ${otp}
+            </div>
+            <p style="color: #666; font-size: 14px;">This code will expire in 10 minutes.</p>
+          </div>
+        `,
       });
     } catch (emailError) {
       console.error('CRITICAL: Email sending failed!');
@@ -133,7 +142,16 @@ const resendOTP = async (req, res) => {
     await sendEmail({
       email: user.email,
       subject: 'Email Verification OTP',
-      message: `Your NEW verification code is: ${otp}\nThis code will expire in 10 minutes.`,
+      html: `
+        <div style="font-family: sans-serif; padding: 20px;">
+          <h2 style="color: #2563eb;">Your New OTP</h2>
+          <p>You requested a new verification code. Use the code below to verify your account:</p>
+          <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; font-size: 24px; font-weight: bold; text-align: center; letter-spacing: 5px; margin: 20px 0;">
+            ${otp}
+          </div>
+          <p style="color: #666; font-size: 14px;">This code will expire in 10 minutes.</p>
+        </div>
+      `,
     });
 
     res.json({ message: 'New OTP sent to your email.' });

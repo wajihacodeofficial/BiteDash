@@ -1,35 +1,38 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
+/**
+ * Reusable email utility using Resend SDK
+ * @param {Object} options - { email, subject, html, message }
+ * Note: Supporting 'message' as fallback for 'text' content to maintain compatibility
+ */
 const sendEmail = async (options) => {
-  console.log('Attempting to send email to:', options.email);
-  console.log('SMTP Config Check:', {
-    user: process.env.EMAIL_USER ? 'PRESENT' : 'MISSING',
-    pass: process.env.EMAIL_PASS ? 'PRESENT' : 'MISSING',
-    host: 'smtp.gmail.com'
-  });
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // Use SSL
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-    // Add debug flag for detailed logs
-    debug: true,
-    logger: true,
-  });
+  const to = options.email || options.to;
+  const subject = options.subject;
+  const html = options.html || options.message; // Use message as fallback if html is not provided
 
-  const mailOptions = {
-    from: `"BiteDash Verification" <${process.env.EMAIL_USER}>`,
-    to: options.email,
-    subject: options.subject,
-    text: options.message,
-    // html: options.html, // Optional: for HTML emails
-  };
+  console.log(`[Resend] Attempting to send email to: ${to}`);
 
-  await transporter.sendMail(mailOptions);
+  try {
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+      to: [to],
+      subject: subject,
+      html: html,
+    });
+
+    if (error) {
+      console.error('[Resend Error]', error);
+      throw new Error(`Resend Error: ${error.message}`);
+    }
+
+    console.log('[Resend Success]', data);
+    return data;
+  } catch (err) {
+    console.error('[Resend Exception]', err.message);
+    throw err; // Propagate error for controller handling
+  }
 };
 
 module.exports = sendEmail;
