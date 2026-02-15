@@ -1,11 +1,16 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // Use STARTTLS
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  // Force IPv4 to avoid ENETUNREACH on IPv6 in some cloud environments
+  socketTimeout: 30000,
+  connectionTimeout: 30000,
 });
 
 // Verify connection configuration
