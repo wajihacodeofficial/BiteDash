@@ -10,9 +10,13 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',') 
+  : ['http://localhost:5173', 'https://bitedash.com'];
+
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5173', 'https://bitedash.com'],
+    origin: ALLOWED_ORIGINS,
     methods: ['GET', 'POST', 'PUT'],
     credentials: true,
   },
@@ -20,7 +24,7 @@ const io = new Server(server, {
 
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://bitedash.com'],
+    origin: ALLOWED_ORIGINS,
     credentials: true,
   })
 );

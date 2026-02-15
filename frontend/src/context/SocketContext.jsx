@@ -13,7 +13,7 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (user) {
-      const newSocket = io('http://localhost:5001', {
+      const newSocket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:5001', {
         withCredentials: true,
       });
 
@@ -23,8 +23,8 @@ export const SocketProvider = ({ children }) => {
 
       // Global Listeners for Admin
       if (user.role === 'admin') {
-        newSocket.on('new_order', (order) => {
-          const msg = `New order placed! #${order._id.slice(-6).toUpperCase()}`;
+        newSocket.on('new_order', () => {
+          const msg = 'New order placed!';
           toast.success(msg, { duration: 5000, position: 'top-right' });
           addNotification('New Order', msg);
         });
@@ -40,7 +40,7 @@ export const SocketProvider = ({ children }) => {
 
       // Global Listeners for Riders
       if (user.role === 'rider') {
-        newSocket.on('order_available', (order) => {
+        newSocket.on('order_available', () => {
           const msg = 'New delivery available nearby!';
           toast.success(msg, { icon: '🚴' });
           addNotification('Available Delivery', msg);
@@ -60,9 +60,11 @@ export const SocketProvider = ({ children }) => {
 
       setSocket(newSocket);
 
-      return () => newSocket.close();
+      return () => {
+        newSocket.close();
+      };
     }
-  }, [user]);
+  }, [user, addNotification]);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
