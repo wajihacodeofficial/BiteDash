@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+const isProd = import.meta.env.PROD;
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://bitedash-backend-production.up.railway.app/api',
+  baseURL: isProd 
+    ? 'https://bitedash-backend-production.up.railway.app/api' 
+    : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'),
 });
 
 api.interceptors.request.use((config) => {
