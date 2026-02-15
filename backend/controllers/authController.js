@@ -52,8 +52,11 @@ const register = async (req, res) => {
       });
     } catch (emailError) {
       console.error('Email sending failed:', emailError);
-      // We still create the user but inform them email failed? 
-      // Or delete user? Usually better to keep and allow "resend".
+      // Delete the unverified user if email fails so they can retry registration
+      await User.findByIdAndDelete(user._id);
+      return res.status(500).json({ 
+        message: 'Failed to send verification email. Please check your email or try again later.' 
+      });
     }
 
     res.status(201).json({
