@@ -1,0 +1,36 @@
+services:
+  # Backend service
+  - type: web
+    name: bitedash-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: PORT
+        value: 5001
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: '*' # Update this with your frontend URL later for better security
+
+  # Frontend service (Optional, Render can also host static sites)
+  - type: static
+    name: bitedash-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://bitedash-backend.onrender.com/api # Replace with your actual backend URL
+      - key: VITE_SOCKET_URL
+        value: https://bitedash-backend.onrender.com # Replace with your actual backend URL
