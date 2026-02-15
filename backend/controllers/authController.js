@@ -51,11 +51,15 @@ const register = async (req, res) => {
         message: `Your verification code is: ${otp}\nThis code will expire in 10 minutes.`,
       });
     } catch (emailError) {
-      console.error('Email sending failed:', emailError);
+      console.error('CRITICAL: Email sending failed!');
+      console.error('Error details:', emailError);
+      
       // Delete the unverified user if email fails so they can retry registration
       await User.findByIdAndDelete(user._id);
+      
       return res.status(500).json({ 
-        message: 'Failed to send verification email. Please check your email or try again later.' 
+        message: 'Failed to send verification email. Please check your email or try again later.',
+        errorSnippet: emailError.message // Returning message snippet to help user
       });
     }
 
