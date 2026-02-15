@@ -10,27 +10,26 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// Ultimate CORS Configuration for Production
+// Consolidated Production CORS Configuration
+const ALLOWED_ORIGINS = [
+  'https://bite-dash-eight.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:3001'
+];
+
 app.use(cors({
   origin: (origin, callback) => {
-    // Dynamically allow any origin and echo it back (necessary for credentials: true)
-    callback(null, true);
+    // Allow if no origin (e.g. server-to-server) or if in whitelist
+    if (!origin || ALLOWED_ORIGINS.includes(origin) || origin.includes('vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed'));
+    }
   },
   credentials: true,
   optionsSuccessStatus: 200
 }));
-
-// Manual preflight fallback
-app.use((req, res, next) => {
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    return res.sendStatus(200);
-  }
-  next();
-});
 
 const io = new Server(server, {
   cors: {
