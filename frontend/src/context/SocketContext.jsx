@@ -13,7 +13,7 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (user) {
-      const newSocket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:5001', {
+      const newSocket = io(import.meta.env.VITE_SOCKET_URL || 'https://bitedash-backend-production.up.railway.app', {
       });
 
       newSocket.on('connect', () => {
