@@ -11,8 +11,8 @@ const app = express();
 const server = http.createServer(app);
 
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',') 
-  : ['http://localhost:5173', 'https://bitedash.com'];
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
+  : ['http://localhost:5173', 'https://bite-dash-eight.vercel.app'];
 
 const io = new Server(server, {
   cors: {
