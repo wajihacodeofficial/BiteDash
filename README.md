@@ -105,12 +105,6 @@ npm run dev
 
 The application will be available at `http://localhost:5173`.
 
-## 📸 Screenshots
-
-|                                  Home Page                                  |                               Restaurant Listing                                |                                Cart View                                 |
-| :-------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: | :----------------------------------------------------------------------: |
-| ![Home](https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400) | ![Restaurants](https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400) | ![Cart](https://images.unsplash.com/photo-1556742044-3c52d6e88c62?w=400) |
-
 ## 🤝 Developed By
 
 This project is developed and maintained by **RapidWave Software**.
